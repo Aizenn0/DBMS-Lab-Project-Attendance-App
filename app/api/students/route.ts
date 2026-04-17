@@ -6,11 +6,11 @@ export const revalidate = 0;
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const teacherId = searchParams.get('teacher_id');
+    const classId = searchParams.get('class_id');
 
     let students;
-    if (teacherId) {
-      students = await sql`SELECT * FROM students WHERE teacher_id = ${teacherId} ORDER BY name ASC`;
+    if (classId) {
+      students = await sql`SELECT * FROM students WHERE class_id = ${classId} ORDER BY name ASC`;
     } else {
       students = await sql`SELECT * FROM students ORDER BY name ASC`;
     }
@@ -23,12 +23,12 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const { name, teacher_id } = await req.json();
-    if (!name || !teacher_id) return NextResponse.json({ error: 'Name and teacher_id are required' }, { status: 400 });
+    const { name, class_id } = await req.json();
+    if (!name || !class_id) return NextResponse.json({ error: 'Name and class_id are required' }, { status: 400 });
 
     const result = await sql`
-      INSERT INTO students (name, teacher_id) 
-      VALUES (${name}, ${teacher_id}) 
+      INSERT INTO students (name, class_id) 
+      VALUES (${name}, ${class_id}) 
       RETURNING *
     `;
     return NextResponse.json(result[0]);
@@ -42,7 +42,6 @@ export async function DELETE(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
-    
     if (!id) return NextResponse.json({ error: 'Student ID required' }, { status: 400 });
 
     await sql`DELETE FROM students WHERE id = ${id}`;

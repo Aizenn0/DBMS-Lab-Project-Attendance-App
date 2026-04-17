@@ -12,7 +12,7 @@ export default function Reports() {
       });
   }, []);
 
-  const counts = { present: 0, absent: 0, late: 0 };
+  const counts = { present: 0, absent: 0, late: 0, excused: 0 };
   records.forEach(r => {
     if(counts[r.status as keyof typeof counts] !== undefined) {
       counts[r.status as keyof typeof counts]++;
@@ -36,6 +36,10 @@ export default function Reports() {
            <div className="text-2xl font-bold">{counts.late}</div>
            <div>Total Late</div>
         </div>
+        <div className="border border-purple-200 bg-purple-50 text-purple-800 px-4 py-3 rounded flex-grow shadow-sm text-center">
+           <div className="text-2xl font-bold">{counts.excused}</div>
+           <div>Total Excused</div>
+        </div>
       </div>
 
       <div className="overflow-x-auto border border-gray-200 rounded">
@@ -44,7 +48,7 @@ export default function Reports() {
             <tr className="bg-gray-50 border-b border-gray-200 text-gray-700">
               <th className="p-3 font-semibold">Date</th>
               <th className="p-3 font-semibold">Student</th>
-              <th className="p-3 font-semibold">Teacher</th>
+              <th className="p-3 font-semibold">Class</th>
               <th className="p-3 font-semibold">Status</th>
             </tr>
           </thead>
@@ -53,11 +57,12 @@ export default function Reports() {
               <tr key={`${r.student_id}-${r.date}`} className="hover:bg-gray-50 transition">
                 <td className="p-3 tabular-nums">{new Date(r.date).toLocaleDateString()}</td>
                 <td className="p-3 font-medium">{r.student_name}</td>
-                <td className="p-3 text-gray-600">{r.teacher_name}</td>
+                <td className="p-3 text-gray-600">{r.class_name}</td>
                 <td className="p-3 capitalize">
                    <span className={`px-2 py-1 rounded text-xs font-semibold ${
                      r.status === 'present' ? 'bg-green-100 text-green-800' :
                      r.status === 'absent' ? 'bg-red-100 text-red-800' :
+                     r.status === 'excused' ? 'bg-purple-100 text-purple-800' :
                      'bg-yellow-100 text-yellow-800'
                    }`}>
                      {r.status}
